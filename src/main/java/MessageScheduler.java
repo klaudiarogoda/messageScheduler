@@ -16,23 +16,28 @@ public class MessageScheduler {
 
     public void scheduleMessage() {
         scheduler = Executors.newSingleThreadScheduledExecutor();
-        long delay = calculateDelay(20);
+        long delay = calculateDelay(12);
 
         scheduler.scheduleAtFixedRate(
                 () -> {
-                    if (daysSent >= 3) {
+                    if (daysSent >= 1) {
                         stopScheduler(scheduler);
                         return;
                     }
-                    int randomNumber = (int) (Math.random() * messages.length);
-                    String todaysMessage = messages[randomNumber];
-                    System.out.println("Today's message: " + todaysMessage);
+                    String todaysMessage=randomMessage();
                     messageService.sendMessage(todaysMessage);
                     daysSent++;
                 },
                 delay,
                 TimeUnit.DAYS.toMillis(1),
                 TimeUnit.MILLISECONDS);
+    }
+
+    public String randomMessage(){
+        int randomNumber = (int) (Math.random() * messages.length);
+        String todaysMessage = messages[randomNumber];
+        System.out.println("Today's message: " + todaysMessage);
+        return todaysMessage;
     }
 
     public long calculateDelay(int hour) {
